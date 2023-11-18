@@ -51,7 +51,7 @@ describe("Group Management Functions", () => {
     await removeTestUsers(testUserIds);
   }, 20000);
 
-  it("should add the user into group", async () => {
+  it("6.1 should add the user into group", async () => {
     await login(testEmails[1], testPasswords[1]);
     const { data, error } = await joinGroup(groupId);
 
@@ -59,7 +59,7 @@ describe("Group Management Functions", () => {
     expect(data).toBe("Successfully join group");
   });
 
-  it("should fetch all users in group", async () => {
+  it("6.2 should fetch all users in group", async () => {
     await login(testEmails[1], testPasswords[1]);
     const { data, error } = await getMembers(groupId);
 
@@ -69,7 +69,7 @@ describe("Group Management Functions", () => {
     expect(data[1].email).toBe(testEmails[1]);
   });
 
-  it("should not allow users not in group to fetch users in group", async () => {
+  it("6.3 should not allow users not in group to fetch users in group", async () => {
     await login(testEmails[2], testPasswords[2]);
     const { data, error } = await getMembers(groupId);
 
