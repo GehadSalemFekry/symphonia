@@ -69,6 +69,7 @@ function GroupProvider({ children }) {
         getGroup: handleGetGroup,
         updateGroup: handleUpdateGroup,
         deleteGroup: handleDeleteGroup,
+        
       }}
     >
       {children}
