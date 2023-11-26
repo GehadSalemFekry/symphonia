@@ -5,6 +5,9 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
 import { GroupContext } from "@/context/GroupContext";
 import { SongContext } from "@/context/SongContext";
 import AddSongForm from "@/components/groups/AddSongForm";
@@ -16,13 +19,16 @@ import Snackbar from "@/components/Snackbar";
 function GroupDetails({ groupId }) {
   const { songs, createSong, getSongsByGroupId, deleteSong } =
     useContext(SongContext);
-  const { currentGroup, getGroup, deleteGroup } = useContext(GroupContext);
+  const { currentGroup, getGroup, deleteGroup, updateGroup } =
+    useContext(GroupContext);
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [filterTags, setFilterTags] = useState([]);
+  const [groupName, setGroupName] = useState("");
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const router = useRouter();
-
-  const [filterTags, setFilterTags] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,9 +41,11 @@ function GroupDetails({ groupId }) {
       if (groupError) {
         setError(`Error fetching current group:${groupError.message}`);
       }
+
+      setGroupName(currentGroup.group_name);
     };
     fetchData();
-  }, [groupId]);
+  }, [groupId, isEditMode]);
 
   const [isAddSongModalOpen, setIsAddSongModalOpen] = useState(false);
 
@@ -95,9 +103,19 @@ function GroupDetails({ groupId }) {
     }
   };
 
-  // const handleEditGroupName = (newGroupName) => {
-  // 	updateGroupName(groupId, newGroupName, user.userId); // TODO: update group data
-  // };
+  const handleEditGroup = async () => {
+    const { error: groupUpdateError } = await updateGroup(groupId, groupName);
+    if (groupUpdateError) {
+      setError(groupUpdateError.message);
+    } else {
+      setSuccess("Group details updated successfully");
+      setIsEditMode(false); // Exit edit mode after successful update
+    }
+  };
+
+  const handleEditIconClick = () => {
+    setIsEditMode(true);
+  };
 
   const filteredSongs =
     filterTags.length === 0
@@ -108,10 +126,34 @@ function GroupDetails({ groupId }) {
 
   return (
     <Box sx={{ marginTop: 4 }}>
-      <Typography variant="h4">
-        {currentGroup ? currentGroup.group_name : "Loading..."}
-        {/* TODO: Have something for loading */}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {isEditMode ? (
+          <>
+            <TextField
+              size="small"
+              variant="outlined"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+            />
+            <Button
+              onClick={handleEditGroup}
+              variant="contained"
+              color="primary"
+            >
+              Update
+            </Button>
+          </>
+        ) : (
+          <>
+            <Typography variant="h4">
+              {currentGroup ? currentGroup.group_name : "Loading..."}
+            </Typography>
+            <IconButton onClick={handleEditIconClick} size="small">
+              <EditIcon />
+            </IconButton>
+          </>
+        )}
+      </Box>
       <FilterPanel
         addedTags={filterTags}
         onAddFilter={handleAddFilter}

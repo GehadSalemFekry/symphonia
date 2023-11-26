@@ -1,5 +1,4 @@
 import supabase from "./setup";
-// need to import create client from supabase-js (found in setup.js)
 
 export async function createGroup(groupName, avatar) {
   // Validate input
@@ -102,10 +101,6 @@ export async function getGroup(groupId) {
 }
 
 export const updateGroup = async (groupId, groupName = null, avatar = null) => {
-  if (!isAdmin(groupId)) {
-    return { data: null, error: Error("You are not an admin of this group") };
-  }
-
   const updateObject = {};
 
   // Validate input
@@ -139,12 +134,6 @@ export const deleteGroup = async (groupId) => {
 };
 
 export const isAdmin = async (groupId) => {
-  // let userId = null;
-  // const user = supabase.auth.user();
-  // if (user) {
-  //   userId = user.id;
-  // }
-
   const { data: sessionWrapper, error: sessionError } =
     await supabase.auth.getSession();
   if (sessionError) {
@@ -170,24 +159,3 @@ export const isAdmin = async (groupId) => {
 
   return data.role === "admin";
 };
-
-// export const updateGroupDetails = async (groupId, newName, membersToRemove) => {
-//   if (!isAdmin(groupId)) {
-//     return { data: null, error: Error("You are not an admin of this group") };
-//   }
-//   // Update the group name
-//   try {
-//     if (newName) {
-//       await updateGroup(groupId, newName);
-//     }
-//     // if(songsToRemove) {
-//     //   await removeSongs(groupId, songsToRemove);
-//     // }
-//     // if (membersToRemove) {
-//     //   await removeMembers(groupId, membersToRemove);
-//     // }
-//     return { data: "Group details updated successfully" };
-//   } catch (error) {
-//     return { error: error.message };
-//   }
-// };

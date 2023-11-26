@@ -39,7 +39,7 @@ function GroupProvider({ children }) {
     return { success: false, error };
   };
 
-  const handleUpdateGroup = async (groupId, groupName, avatar) => {
+  const handleUpdateGroup = async (groupId, groupName, avatar = "") => {
     const { data, error } = await updateGroup(groupId, groupName, avatar);
     if (!error && data) {
       setGroups((prevGroups) =>
@@ -69,7 +69,6 @@ function GroupProvider({ children }) {
         getGroup: handleGetGroup,
         updateGroup: handleUpdateGroup,
         deleteGroup: handleDeleteGroup,
-        
       }}
     >
       {children}

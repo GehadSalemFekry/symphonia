@@ -19,7 +19,7 @@ const Recommendations = () => {
         artists,
         urls
       );
-      if (recommendationError) {
+      if (recommendationError && songs) { // error and there are songs
         setError(
           `Error fetching recommendations:${recommendationError.message}`
         );
@@ -29,7 +29,6 @@ const Recommendations = () => {
     fetchData();
   }, [songs]);
 
-  console.log(recommendations);
   return (
     <Box sx={{ marginBottom: 2 }}>
       {recommendations?.length !== 0 && (
