@@ -43,21 +43,20 @@ function GroupPage() {
       <Snackbar message={error} setMessage={setError} status="error" />
       <Snackbar message={success} setMessage={setSuccess} status="success" />
       <Header />
-          {user && (
-            <div style={{ display: "flex" }}>
-              <GroupList />
-    
-              <Container>
-                <GroupDetails groupId={groupId} />
-              </Container>
-    
-              <MemberList groupId={groupId} />
-            </div>
-          )}
-      </div>
-      
-      );
 
+      {user && (
+        <div style={{ display: "flex", paddingTop: "64px" }}>
+          <GroupList />
+
+          <Container>
+            <GroupDetails groupId={groupId} />
+          </Container>
+
+          <MemberList groupId={groupId} />
+        </div>
+      )}
+    </div>
+  );
 }
 
   // TODO: In all event handlers, need to update database
