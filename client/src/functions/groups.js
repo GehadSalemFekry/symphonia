@@ -1,4 +1,5 @@
 import supabase from "./setup";
+// need to import create client from supabase-js (found in setup.js)
 
 export async function createGroup(groupName, avatar) {
   // Validate input
@@ -101,6 +102,10 @@ export async function getGroup(groupId) {
 }
 
 export const updateGroup = async (groupId, groupName = null, avatar = null) => {
+  if (!isAdmin(groupId)) {
+    return { data: null, error: Error("You are not an admin of this group") };
+  }
+
   const updateObject = {};
 
   // Validate input
@@ -132,3 +137,57 @@ export const deleteGroup = async (groupId) => {
   const err = error ? Error(error.message) : null;
   return { data: null, err };
 };
+
+export const isAdmin = async (groupId) => {
+  // let userId = null;
+  // const user = supabase.auth.user();
+  // if (user) {
+  //   userId = user.id;
+  // }
+
+  const { data: sessionWrapper, error: sessionError } =
+    await supabase.auth.getSession();
+  if (sessionError) {
+    return {
+      data: null,
+      error: Error("Cannot fetch session:", sessionError.message),
+    };
+  }
+
+  const userId = sessionWrapper.session.user.id;
+
+  const { data, error } = await supabase
+    .from("memberships")
+    .select("role")
+    .eq("group_id", groupId)
+    .eq("user_id", userId)
+    .limit(1)
+    .single();
+
+  if (error) {
+    return false;
+  }
+
+  return data.role === "admin";
+};
+
+// export const updateGroupDetails = async (groupId, newName, membersToRemove) => {
+//   if (!isAdmin(groupId)) {
+//     return { data: null, error: Error("You are not an admin of this group") };
+//   }
+//   // Update the group name
+//   try {
+//     if (newName) {
+//       await updateGroup(groupId, newName);
+//     }
+//     // if(songsToRemove) {
+//     //   await removeSongs(groupId, songsToRemove);
+//     // }
+//     // if (membersToRemove) {
+//     //   await removeMembers(groupId, membersToRemove);
+//     // }
+//     return { data: "Group details updated successfully" };
+//   } catch (error) {
+//     return { error: error.message };
+//   }
+// };

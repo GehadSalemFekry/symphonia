@@ -6,6 +6,7 @@ export {
   getGroup,
   updateGroup,
   deleteGroup,
+  isAdmin,
 } from "./groups";
 
 export { getMembers, joinGroup, inviteMember } from "./member";
