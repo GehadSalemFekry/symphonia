@@ -5,6 +5,7 @@ import SongProvider from "./SongContext";
 import MemberProvider from "./MemberContext";
 import LoadingProvider from "./LoadingContext";
 import SpotifyProvider from "./SpotifyContext";
+import { RoomContext } from "./RoomContext";
 
 const AppContextProvider = ({ children }) => {
   const providers = [

@@ -22,3 +22,12 @@ export {
 export { addSongTag, removeSongTag, getSongTags } from "./songTags";
 
 export { fetchSpotifyRecommendations, searchSpotify } from "./spotifyAPI";
+
+export {
+  createRoom,
+  getRoomById,
+  updateRoomState,
+  addSongToRoom,
+  getSongsByRoomId,
+  deleteSongFromRoom,
+} from "./room";
