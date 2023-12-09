@@ -1,4 +1,4 @@
-export { signup, login, logout, getUser, updateUser, deleteUser } from "./auth";
+export { signup, login, logout, getUser, deleteUser } from "./auth";
 
 export {
   createGroup,
@@ -9,7 +9,7 @@ export {
   isAdmin,
 } from "./groups";
 
-export { getMembers, joinGroup, inviteMember } from "./member";
+export { getMembers, joinGroup, inviteMember, updateUser} from "./member";
 
 export {
   createSong,
