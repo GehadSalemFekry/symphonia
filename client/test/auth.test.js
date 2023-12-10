@@ -148,9 +148,9 @@ describe("User Management Functions", () => {
         altUserName = "existing";
 
         const { data: signupData } = await signup(
+          altUserName, // alternative username
           altEmail, // alternative email
           fakePassword,
-          altUserName, // alternative username
           fakeUserAvatar
         );
 
@@ -162,9 +162,9 @@ describe("User Management Functions", () => {
 
       it("2.4 should return no error when user updates with same email and username as before", async () => {
         const { data, error } = await updateUser(
+          fakeUsername,
           fakeEmail,
           undefined,
-          fakeUsername,
           undefined
         );
 
@@ -174,9 +174,9 @@ describe("User Management Functions", () => {
 
       it("2.5 should update account information in both Supabase Auth and the database", async () => {
         const { data, error } = await updateUser(
+          "new_username",
           "new_email@gmail.com",
           undefined,
-          "new_username",
           undefined
         );
 

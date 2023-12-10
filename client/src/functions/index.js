@@ -9,7 +9,7 @@ export {
   isAdmin,
 } from "./groups";
 
-export { getMembers, joinGroup, inviteMember } from "./member";
+export { getMembers, joinGroup, inviteMember} from "./member";
 
 export {
   createSong,

@@ -85,6 +85,10 @@ export default function Header() {
     logout(); // Call the logout function from UserContext
     handleMenuClose(); // Close the menu
   };
+  const handleProfile = () => {
+    router.push("/profile");
+    handleMenuClose();
+  };
 
   return (
     <AppBar position="fixed">
@@ -128,6 +132,7 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
+              <MenuItem onClick={handleProfile}>My account</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </>
