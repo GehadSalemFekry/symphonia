@@ -132,8 +132,8 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
               <MenuItem onClick={handleProfile}>My account</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </>
         ) : (

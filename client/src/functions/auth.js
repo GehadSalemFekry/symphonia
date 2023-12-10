@@ -146,12 +146,23 @@ export const getUser = async () => {
   return { data: user, error: null };
 };
 
-export const updateUser = async (email, password, username, userAvatar) => {
+export const updateUser = async (
+  username,
+  email,
+  password = "",
+  userAvatar = ""
+) => {
   // Construct objects that contain information needed to be updated
   const updateObject = {}; // update to database
   const authObject = {}; // update to Supabase Auth
 
   if (email) {
+    // validate the email format
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      return { data: null, error: Error("Invalid email format") };
+    }
+
     updateObject.email = email;
     authObject.email = email;
   }
@@ -176,7 +187,6 @@ export const updateUser = async (email, password, username, userAvatar) => {
   }
 
   // Update user info in database
-
   const { data: sessionWrapper, error: sessionError } =
     await supabase.auth.getSession();
 

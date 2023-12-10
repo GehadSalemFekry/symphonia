@@ -134,22 +134,3 @@ export const inviteMember = async (groupId, email, role) => {
 
   return { data: "Successfully invited user to group", error: null };
 };
-
-export const updateUser = async(userId, newUsername, newEmail) => {
-  const { data, error } = await supabase
-    .from('users')
-    .update({ username: newUsername, email: newEmail })
-    .eq('user_id', userId);
-
-  if (error) {
-    return { data: null, error: Error(error.message) };
-  }
-
-  const { data: sessionWrapper, error: sessionError } =
-    await supabase.auth.updateUser({ email: newEmail });
-  if(sessionError) {
-    return { data: null, error: Error(sessionError.message) };
-  }
-
-  return { data: "Successfully updated user information", error: null };
-};

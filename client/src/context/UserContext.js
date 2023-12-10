@@ -38,13 +38,38 @@ function UserProvider({ children }) {
     return { success: false, error };
   };
 
+  const handleUpdateUser = async (username, email, password, userAvatar) => {
+    const { data, error } = await updateUser(
+      username,
+      email,
+      password,
+      userAvatar
+    );
+
+    if (error) {
+      console.error("Error updating user:", error);
+      return { success: false, error };
+    }
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      email: email || prevUser.email,
+      username: username || prevUser.username,
+      user_avatar: userAvatar || prevUser.user_avatar,
+    }));
+
+    return { success: true, data };
+  };
+
   const logout = () => {
     // Simulate logout
     setUser(null);
   };
 
   return (
-    <UserContext.Provider value={{ user, signup, login, logout }}>
+    <UserContext.Provider
+      value={{ user, signup, login, logout, updateUser: handleUpdateUser }}
+    >
       {children}
     </UserContext.Provider>
   );
