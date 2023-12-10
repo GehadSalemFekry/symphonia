@@ -21,6 +21,7 @@ function Home() {
         flexDirection: "column",
         justifyContent: "center",
         textAlign: "center",
+        paddingLeft: "75px",
       }}
     >
       <Typography

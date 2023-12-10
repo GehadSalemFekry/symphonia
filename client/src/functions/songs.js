@@ -64,3 +64,61 @@ export async function searchSongsByName(groupId, searchTerm) {
 
   return { data, error: error ? Error(error.message) : null };
 }
+
+export async function likeSong(songId, userId) {
+  const { data, error } = await supabase
+    .from("likes")
+    .insert([{ song_id: songId, user_id: userId }])
+    .select()
+    .single();
+
+  return { data, error: error ? Error(error.message) : null };
+}
+
+export async function unlikeSong(songId, userId) {
+  const { error } = await supabase
+    .from("likes")
+    .delete()
+    .match({ song_id: songId, user_id: userId })
+    .select();
+
+  return { error: error ? Error(error.message) : null };
+}
+
+export async function addCommentToSong(songId, userId, commentText) {
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([{ song_id: songId, user_id: userId, comment_text: commentText }])
+    .single()
+    .select();
+
+  return { data, error: error ? Error(error.message) : null };
+}
+
+export async function deleteComment(commentId) {
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId)
+    .select();
+
+  return { error: error ? Error(error.message) : null };
+}
+
+export async function getCommentsBySongId(songId) {
+  const { data, error } = await supabase
+    .from("comments")
+    .select()
+    .eq("song_id", songId);
+
+  return { data, error };
+}
+
+export async function getLikesBySongId(songId) {
+  const { data, error } = await supabase
+    .from("likes")
+    .select("*")
+    .eq("song_id", songId);
+
+  return { data, error };
+}

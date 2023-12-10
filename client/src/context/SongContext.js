@@ -7,6 +7,12 @@ import {
   getSongTags,
   removeSongTag,
   addSongTag,
+  likeSong,
+  unlikeSong,
+  addCommentToSong,
+  deleteComment,
+  getLikesBySongId,
+  getCommentsBySongId,
 } from "@/functions";
 
 export const SongContext = createContext();
@@ -36,26 +42,49 @@ function SongProvider({ children }) {
     }
 
     try {
-      const updatedSongsWithTags = await Promise.all(
+      const updatedSongsWithTagsLikesComments = await Promise.all(
         data.map(async (song) => {
-          const { data: tagsData } = await getSongTags(song.song_id);
-          return { ...song, tags: tagsData || [] };
+          const [
+            { data: tagsData },
+            { data: likesData },
+            { data: commentsData },
+          ] = await Promise.all([
+            getSongTags(song.song_id),
+            getLikesBySongId(song.song_id),
+            getCommentsBySongId(song.song_id),
+          ]);
+
+          return {
+            ...song,
+            tags: tagsData || [],
+            likes: likesData || [],
+            comments: commentsData || [],
+          };
         })
       );
-      setSongs(updatedSongsWithTags);
+
+      setSongs(updatedSongsWithTagsLikesComments);
       return { success: true };
-    } catch (tagError) {
-      console.error("Error fetching tags:", tagError);
-      return { success: false, error: tagError };
+    } catch (error) {
+      console.error("Error fetching additional song data:", error);
+      return { success: false, error };
     }
   };
+
 
   const handleUpdateSong = async (songId, name, author, coverImage) => {
     const { data, error } = await updateSong(songId, name, author, coverImage);
     if (data) {
       setSongs((prevSongs) =>
         prevSongs.map((song) =>
-          song.song_id === songId ? { ...data, tags: song.tags } : song
+          song.song_id === songId
+            ? {
+                ...data,
+                tags: song.tags,
+                likes: song.likes,
+                comments: song.comments,
+              }
+            : song
         )
       );
       return { success: true };
@@ -109,6 +138,74 @@ function SongProvider({ children }) {
     return { success: true };
   };
 
+  const handleLikeSong = async (songId, userId) => {
+    const { data, error } = await likeSong(songId, userId);
+    console.log("data like", data, "error like", error);
+
+    if (error) {
+      return { success: false, error };
+    }
+
+    setSongs((prevSongs) =>
+      prevSongs.map((song) =>
+        song.song_id === songId
+          ? { ...song, likes: [...song.likes, data] }
+          : song
+      )
+    );
+    return { success: true };
+  };
+
+  const handleUnlikeSong = async (songId, userId) => {
+    const { error } = await unlikeSong(songId, userId);
+    if (error) {
+      return { success: false, error };
+    }
+
+    setSongs((prevSongs) =>
+      prevSongs.map((song) =>
+        song.song_id === songId
+          ? {
+              ...song,
+              likes: song.likes.filter((like) => like.user_id !== userId),
+            }
+          : song
+      )
+    );
+    return { success: true };
+  };
+
+  const handleAddCommentToSong = async (songId, userId, commentText) => {
+    const { data, error } = await addCommentToSong(songId, userId, commentText);
+    if (error) {
+      return { success: false, error };
+    }
+
+    setSongs((prevSongs) =>
+      prevSongs.map((song) =>
+        song.song_id === songId
+          ? { ...song, comments: [...song.comments, data] }
+          : song
+      )
+    );
+    return { success: true };
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    const { error } = await deleteComment(commentId);
+    if (error) {
+      return { success: false, error };
+    }
+
+    setSongs((prevSongs) =>
+      prevSongs.map((song) => ({
+        ...song,
+        comments: song.comments.filter((comment) => comment.id !== commentId),
+      }))
+    );
+    return { success: true };
+  };
+
   return (
     <SongContext.Provider
       value={{
@@ -119,6 +216,10 @@ function SongProvider({ children }) {
         deleteSong: handleDeleteSong,
         addSongTag: handleAddSongTag,
         removeSongTag: handleRemoveSongTag,
+        likeSong: handleLikeSong,
+        unlikeSong: handleUnlikeSong,
+        addCommentToSong: handleAddCommentToSong,
+        deleteComment: handleDeleteComment,
       }}
     >
       {children}

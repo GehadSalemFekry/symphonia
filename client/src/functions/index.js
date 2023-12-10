@@ -17,6 +17,12 @@ export {
   updateSong,
   deleteSong,
   searchSongsByName,
+  likeSong,
+  unlikeSong,
+  addCommentToSong,
+  deleteComment,
+  getCommentsBySongId,
+  getLikesBySongId,
 } from "./songs";
 
 export { addSongTag, removeSongTag, getSongTags } from "./songTags";

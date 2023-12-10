@@ -42,7 +42,7 @@ function GroupDetails({ groupId }) {
         setError(`Error fetching current group:${groupError.message}`);
       }
 
-      setGroupName(currentGroup.group_name);
+      setGroupName(currentGroup?.group_name);
     };
     fetchData();
   }, [groupId, isEditMode]);
@@ -125,7 +125,7 @@ function GroupDetails({ groupId }) {
         );
 
   return (
-    <Box sx={{ marginTop: 4 }}>
+    <Box sx={{ marginTop: 4, paddingLeft: "75px", paddingRight: "75px" }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         {isEditMode ? (
           <>
@@ -192,7 +192,7 @@ function GroupDetails({ groupId }) {
       <Recommendations />
 
       <AddSongForm
-        onAddSong={handleAddSong} // TODO: tags are not being added or edited yet
+        onAddSong={handleAddSong} 
         open={isAddSongModalOpen}
         handleClose={handleCloseAddSongModal}
       />
